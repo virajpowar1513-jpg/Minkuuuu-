@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday, Minkuuu 💕</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Georgia', serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #4a0d1f 0%, #6b1028 40%, #8b1a3a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+    padding: 30px 15px;
+  }
+
+  .music-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 245, 247, 0.9);
+    border: 2px solid #8b1a3a;
+    color: #6b1028;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+  }
+  .music-btn:hover { transform: scale(1.1); }
+  .music-btn.playing { animation: spin 3s linear infinite; }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .page-indicator {
+    position: fixed;
+    top: 25px;
+    left: 25px;
+    color: rgba(255, 245, 247, 0.85);
+    font-size: 0.95em;
+    letter-spacing: 2px;
+    z-index: 999;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.4);
+  }
+
+  .page {
+    display: none;
+    width: 100%;
+    max-width: 650px;
+    z-index: 2;
+  }
+  .page.active {
+    display: block;
+    animation: fadeIn 1.2s ease;
+  }
+
+  .card {
+    background: rgba(255, 245, 247, 0.97);
+    padding: 50px 40px;
+    border-radius: 25px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 0 3px rgba(139, 26, 58, 0.3);
+    text-align: center;
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2.4em;
+    color: #6b1028;
+    margin-bottom: 25px;
+    animation: bounce 2s infinite;
+  }
+
+  .carousel {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(107, 16, 40, 0.3);
+    border: 4px solid #8b1a3a;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  }
+  .slide.active { opacity: 1; }
+  .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .slide.active img { animation: kenburns 6s ease-out forwards; }
+
+  @keyframes kenburns {
+    from { transform: scale(1); }
+    to { transform: scale(1.08); }
+  }
+
+  .caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(74, 13, 31, 0.9), transparent);
+    color: #fff;
+    padding: 25px 20px 15px;
+    font-style: italic;
+    font-size: 1em;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(107, 16, 40, 0.6);
+    color: #fff;
+    border: none;
+    font-size: 22px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 3;
+  }
+  .arrow:hover {
+    background: rgba(107, 16, 40, 0.95);
+    transform: translateY(-50%) scale(1.1);
+  }
+  .arrow.prev { left: 12px; }
+  .arrow.next { right: 12px; }
+
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #d4a5b3;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .dot.active {
+    background: #8b1a3a;
+    transform: scale(1.3);
+    width: 28px;
+    border-radius: 6px;
+  }
+
+  .message {
+    font-size: 1.1em;
+    color: #5a3038;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .message.left { text-align: left; }
+  .heart {
+    font-size: 2.8em;
+    animation: pulse 1.5s infinite;
+    margin: 10px 0;
+  }
+  .signature {
+    font-style: italic;
+    color: #8b1a3a;
+    margin-top: 15px;
+    font-size: 1.05em;
+  }
+
+  .next-btn {
+    margin-top: 30px;
+    padding: 14px 45px;
+    background: #8b1a3a;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.05em;
+    font-family: 'Georgia', serif;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(107, 16, 40, 0.35);
+    letter-spacing: 1px;
+  }
+  .next-btn:hover {
+    background: #6b1028;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(107, 16, 40, 0.55);
+  }
+  .next-btn:active { transform: translateY(-1px); }
+
+  .gift-box {
+    font-size: 8em;
+    cursor: pointer;
+    display: inline-block;
+    margin: 20px 0;
+    animation: shake 1.5s infinite;
+    transition: transform 0.3s;
+    user-select: none;
+  }
+  .gift-box:hover { transform: scale(1.1); }
+  .gift-box.opened {
+    animation: none;
+    transform: scale(1.3) rotate(15deg);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.8s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(-8deg); }
+    20% { transform: rotate(8deg); }
+    30% { transform: rotate(-8deg); }
+    40% { transform: rotate(8deg); }
+    50% { transform: rotate(0deg); }
+  }
+
+  .gift-hint {
+    color: #8b1a3a;
+    font-style: italic;
+    margin-top: 10px;
+    animation: pulse 2s infinite;
+  }
+
+  .gift-message {
+    display: none;
+    animation: fadeIn 1s ease;
+  }
+  .gift-message.show { display: block; }
+
+  /* ===== FINAL MESSAGE BOX ===== */
+  .final-message {
+    display: none;
+    margin-top: 30px;
+    padding: 30px 25px;
+    background: linear-gradient(135deg, #fff5f7, #fbe3e9);
+    border-radius: 20px;
+    border: 3px dashed #8b1a3a;
+    animation: fadeIn 1s ease;
+  }
+  .final-message.show { display: block; }
+
+  .final-message h2 {
+    color: #6b1028;
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    animation: pulse 2s infinite;
+    line-height: 1.3;
+  }
+
+  .final-message .big-emojis {
+    font-size: 3em;
+    margin: 15px 0;
+    animation: bounce 1.5s infinite;
+    line-height: 1.3;
+  }
+
+  .floating-heart {
+    position: fixed;
+    color: #e8a0b8;
+    animation: floatUp linear infinite;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 14px;
+    top: -20px;
+    z-index: 998;
+    pointer-events: none;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  @keyframes floatUp {
+    from { transform: translateY(100vh) rotate(0deg); opacity: 0.6; }
+    to { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 1.6em; }
+    .message { font-size: 1em; }
+    .card { padding: 35px 22px; }
+    .carousel { height: 300px; }
+    .arrow { width: 36px; height: 36px; font-size: 18px; }
+    .music-btn { width: 42px; height: 42px; font-size: 18px; }
+    .gift-box { font-size: 6em; }
+    .page-indicator { font-size: 0.8em; top: 22px; left: 18px; }
+    .next-btn { padding: 12px 35px; font-size: 1em; }
+    .final-message h2 { font-size: 1.4em; }
+    .final-message .big-emojis { font-size: 2.4em; }
+  }
+</style>
+</head>
+<body>
+
+  <audio id="bgMusic" loop>
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+  <button class="music-btn" id="musicBtn">♪</button>
+
+  <div class="page-indicator" id="pageIndicator">1 / 5</div>
+
+  <!-- ========== PAGE 1: WELCOME ========== -->
+  <div class="page active" id="page-home">
+    <div class="card">
+      <h1>Happy Birthday, minkuuu🫀!</h1>
+      <div class="heart">🎂</div>
+      <div class="message">
+        Happyyyy birthdayyyy janemannnnn 💋💋 , today is theee bestt dayyy off ourr lifeee youuu areee turning 18. 
+        I amm veryyy happyyy tooo haveee youuu ass myyy lifeee 🌎 , 
+        loveeee youuu pilluuu 🤌🏼💋🧿
+      </div>
+      <button class="next-btn" onclick="nextPage()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ========== PAGE 2: PHOTOS ========== -->
+  <div class="page" id="page-photos">
+    <div class="card">
+      <h1>Mineeee 🙈🤤</h1>
+
+      <div class="carousel" id="carousel">
+        <div class="slide active">
+          <img src="photo1.jpg" alt="Memory 1">
+          <div class="caption">Mazz ballll 💋</div>
+        </div>
+        <div class="slide">
+          <img src="photo2.jpg" alt="Memory 2">
+          <div class="caption">mazzz Shonnn🫀</div>
+        </div>
+        <div class="slide">
+          <img src="photo3.jpg" alt="Memory 3">
+          <div class="caption">mazz pilluuu 🤌🏼</div>
+        </div>
+        <div class="slide">
+          <img src="photo4.jpg" alt="Memory 4">
+          <div class="caption">Mazaa bachaaa 🤤</div>
+        </div>
+        <div class="slide">
+          <img src="photo5.jpg" alt="Memory 5">
+          <div class="caption">mazzzz jagg 🌎</div>
+        </div>
+
+        <button class="arrow prev" onclick="changeSlide(-1)">❮</button>
+        <button class="arrow next" onclick="changeSlide(1)">❯</button>
+      </div>
+
+      <div class="dots" id="dots"></div>
+
+      <button class="next-btn" id="bestMemoryBtn" onclick="revealBestMemory()">Best Memory →</button>
+
+      <!-- ===== BEST MEMORY SECTION ===== -->
+      <div id="bestMemorySection" style="display: none; margin-top: 40px; animation: fadeIn 1s ease;">
+        <h1 style="font-size: 1.9em; margin-top: 20px;">Our Best Memory 💫</h1>
+
+        <div class="carousel" style="height: 340px;">
+          <div class="slide active">
+            <img src="best-memory.jpg" alt="Best Memory">
+          </div>
+        </div>
+
+        <div class="message" style="margin-top: 25px; font-size: 1.15em; font-style: italic;">
+          I wanttt tooo recreate thiss 24/7 👉🏻👈🏻🙈
+        </div>
+
+        <button class="next-btn" onclick="nextPage()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PAGE 3: LETTER ========== -->
+  <div class="page" id="page-message">
+    <div class="card">
+      <h1>A Letter For You 💌</h1>
+
+      <div class="message left">
+        My dearest Minkuuu,<br><br>
+
+        Happy Birthday, my love. 🎂<br><br>
+
+        I don't know how to put into words what you mean to me, but I'll try.
+        You walked into my life and turned ordinary days into my favorite memories.
+        Your laugh is my favorite sound, your smile is my favorite sight, and your
+        heart is the safest place I've ever known.<br><br>
+
+        Today, the world celebrates you — but I celebrate you every single day.
+        Thank you for being patient with me, for loving me the way you do, and for
+        making me a better person just by being near.<br><br>
+
+        Here's to more late-night talks, silly arguments, tight hugs, and endless
+        adventures. Here's to us. ❤️<br><br>
+
+        I love you more than words can ever say.<br><br>
+
+        Forever yours,<br>
+        <strong>viluuu</strong>
+      </div>
+
+      <div class="heart">💖</div>
+
+      <button class="next-btn" onclick="nextPage()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ========== PAGE 4: GIFT / SURPRISE ========== -->
+  <div class="page" id="page-gift">
+    <div class="card">
+      <h1>A Little Surprise 🎁</h1>
+
+      <div id="giftClosed">
+        <p class="message">I have something special for you...</p>
+        <div class="gift-box" id="giftBox">🎁</div>
+        <p class="gift-hint">Tap the gift to open it 💝</p>
+      </div>
+
+      <div class="gift-message" id="giftMessage">
+        <div class="heart">🎉💕🎉</div>
+        <h1 style="font-size: 1.8em;">Happy Birthday, Minkuuu!</h1>
+        <div class="message">
+          Hellooooooo babyyyyyyy i cantt giveee youu surprise virtually youuurrr realll surpriseee isss Waitingggg forrrr youuuuu. 
+          Youuuu will gettt ittt when weee mett nextt timeee sooo beee readyyyyy 🙈
+        </div>
+        <div class="signature">— Yours forever,<br>viluuu</div>
+
+        <button class="next-btn" onclick="nextPage()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PAGE 5: MINEEEE RETURNNN GIFTTT ========== -->
+  <div class="page" id="page-returngift">
+    <div class="card">
+      <h1 style="font-size: 2.4em; line-height: 1.2;">Mineeee returnnn gifttt 🎁💝</h1>
+
+      <div class="message" style="margin-bottom: 10px;">
+        Nowwww it'ssss youuurrr turnnnn babyyyyy 🙈<br>
+        Pickkkk oneeee optionnnn 👇🏻
+      </div>
+
+      <button class="next-btn" id="optionsBtn" onclick="showFinalMessage()">your options</button>
+
+      <div class="final-message" id="finalMessage">
+        <h2>Youu havee onlyyy oneee option 🍼🤤</h2>
+        <div class="big-emojis">🍼🤤🍼🤤🍼</div>
+        <div class="message" style="font-style: italic;">
+          i wanttt thisss 👉🏻👈🏻🙈🤤<br><br>
+          Happy Birthday once again, Minkuuu🫀<br>
+          Loveee youuuu foreverrrr 🤌🏼💋🧿
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const pageOrder = ['page-home', 'page-photos', 'page-message', 'page-gift', 'page-returngift'];
+  let currentPage = 0;
+
+  function nextPage() {
+    if (currentPage < pageOrder.length - 1) {
+      currentPage++;
+      showPageByIndex(currentPage);
+    }
+  }
+
+  function showPageByIndex(index) {
+    currentPage = index;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageOrder[index]).classList.add('active');
+
+    document.getElementById('pageIndicator').textContent = (index + 1) + ' / ' + pageOrder.length;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (pageOrder[index] === 'page-gift') {
+      setTimeout(() => launchConfetti(), 400);
+    }
+    if (pageOrder[index] === 'page-returngift') {
+      setTimeout(() => launchConfetti(), 400);
+    }
+  }
+
+  /* ===== BEST MEMORY REVEAL ===== */
+  function revealBestMemory() {
+    const section = document.getElementById('bestMemorySection');
+    const btn = document.getElementById('bestMemoryBtn');
+    section.style.display = 'block';
+    btn.style.display = 'none';
+    setTimeout(() => {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  /* ===== RETURN GIFT — SHOW FINAL MESSAGE ===== */
+  function showFinalMessage() {
+    const btn = document.getElementById('optionsBtn');
+    const finalMsg = document.getElementById('finalMessage');
+    btn.style.display = 'none';
+    finalMsg.classList.add('show');
+    launchConfetti();
+    setTimeout(() => {
+      finalMsg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+  }
+
+  /* ===== MUSIC ===== */
+  const music = document.getElementById('bgMusic');
+  const musicBtn = document.getElementById('musicBtn');
+
+  musicBtn.addEventListener('click', () => {
+    if (music.paused) {
+      music.play().catch(() => {});
+      musicBtn.classList.add('playing');
+      musicBtn.textContent = '❚❚';
+    } else {
+      music.pause();
+      musicBtn.classList.remove('playing');
+      musicBtn.textContent = '♪';
+    }
+  });
+
+  /* ===== CAROUSEL ===== */
+  const slides = document.querySelectorAll('.slide');
+  const dotsContainer = document.getElementById('dots');
+  let current = 0;
+  let autoPlay;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.classList.add('dot');
+    if (i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => goToSlide(i));
+    dotsContainer.appendChild(dot);
+  });
+  const dots = document.querySelectorAll('.dot');
+
+  function goToSlide(index) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    resetAutoPlay();
+  }
+
+  function changeSlide(direction) {
+    goToSlide(current + direction);
+  }
+
+  function startAutoPlay() {
+    autoPlay = setInterval(() => goToSlide(current + 1), 5000);
+  }
+  function resetAutoPlay() {
+    clearInterval(autoPlay);
+    startAutoPlay();
+  }
+  startAutoPlay();
+
+  let touchStartX = 0;
+  const carousel = document.getElementById('carousel');
+  carousel.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+  carousel.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+  });
+
+  /* ===== GIFT REVEAL ===== */
+  const giftBox = document.getElementById('giftBox');
+  const giftMessage = document.getElementById('giftMessage');
+
+  giftBox.addEventListener('click', () => {
+    giftBox.classList.add('opened');
+    launchConfetti();
+    setTimeout(() => {
+      document.getElementById('giftClosed').style.display = 'none';
+      giftMessage.classList.add('show');
+      document.getElementById('pageIndicator').textContent = '🎉';
+    }, 600);
+  });
+
+  /* ===== CONFETTI ===== */
+  const confettiColors = ['#8b1a3a', '#d6336c', '#ff9a9e', '#fecfef', '#ffd700', '#fff5f7', '#e8a0b8'];
+
+  function launchConfetti() {
+    for (let i = 0; i < 120; i++) {
+      setTimeout(() => createConfettiPiece(), i * 15);
+    }
+  }
+
+  function createConfettiPiece() {
+    const piece = document.createElement('div');
+    piece.classList.add('confetti');
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+    piece.style.width = (Math.random() * 8 + 6) + 'px';
+    piece.style.height = (Math.random() * 8 + 8) + 'px';
+    piece.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 5000);
+  }
+
+  /* ===== FLOATING HEARTS ===== */
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('floating-heart');
+    heart.innerHTML = ['❤️','💕','💖','💗','🌸','🤍'][Math.floor(Math.random()*6)];
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = (Math.random() * 5 + 6) + 's';
+    heart.style.fontSize = (Math.random() * 18 + 14) + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 11000);
+  }
+  setInterval(createHeart, 500);
+
+  /* ===== WELCOME CONFETTI ===== */
+  window.addEventListener('load', () => {
+    setTimeout(() => launchConfetti(), 800);
+  });
+</script>
+
+</body>
+</html>
